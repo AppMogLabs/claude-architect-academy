@@ -3,6 +3,8 @@
 interface StepNavigationProps {
   readonly currentStep: number;
   readonly totalSteps: number;
+  readonly completedSteps: ReadonlySet<string>;
+  readonly stepIds: readonly string[];
   readonly onPrev: () => void;
   readonly onCheck: () => void;
   readonly onNext: () => void;
@@ -13,6 +15,8 @@ interface StepNavigationProps {
 export function StepNavigation({
   currentStep,
   totalSteps,
+  completedSteps,
+  stepIds,
   onPrev,
   onCheck,
   onNext,
@@ -23,23 +27,28 @@ export function StepNavigation({
     <div className="flex items-center gap-4 px-6 py-3 bg-[#0d1117] border-t border-[#1a1a2e]">
       {/* Progress bar */}
       <div className="flex gap-1 flex-1">
-        {Array.from({ length: totalSteps }, (_, i) => (
-          <div
-            key={i}
-            className={`h-1.5 flex-1 rounded-full transition-colors ${
-              i < currentStep
-                ? "bg-[#00ff41]"
-                : i === currentStep
-                  ? "bg-[#ffb000]"
-                  : "bg-[#1a1a2e]"
-            }`}
-          />
-        ))}
+        {Array.from({ length: totalSteps }, (_, i) => {
+          const isCompleted = completedSteps.has(stepIds[i]);
+          const isCurrent = i === currentStep;
+
+          return (
+            <div
+              key={i}
+              className={`h-1.5 flex-1 rounded-full transition-colors ${
+                isCompleted
+                  ? "bg-[#00ff41]"
+                  : isCurrent
+                    ? "bg-[#ffb000]"
+                    : "bg-[#1a1a2e]"
+              }`}
+            />
+          );
+        })}
       </div>
 
       {/* Step counter */}
-      <span className="text-xs text-gray-500 font-[family-name:var(--font-vt323)] min-w-[60px] text-center">
-        {currentStep + 1}/{totalSteps}
+      <span className="text-xs text-gray-500 font-[family-name:var(--font-vt323)] min-w-[80px] text-center">
+        Step {currentStep + 1}/{totalSteps}
       </span>
 
       {/* Buttons */}

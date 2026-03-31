@@ -1,17 +1,26 @@
 "use client";
 
-import type { Step } from "@/lib/types";
+import type { LessonStep } from "@/lib/types";
 import { GlowText } from "@/components/ui/GlowText";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface LessonPanelProps {
-  readonly step: Step;
+  readonly step: LessonStep;
   readonly stepIndex: number;
   readonly totalSteps: number;
 }
 
 export function LessonPanel({ step, stepIndex, totalSteps }: LessonPanelProps) {
-  const [showHint, setShowHint] = useState(false);
+  const [hintLevel, setHintLevel] = useState(0);
+
+  // Reset hint level when step changes
+  useEffect(() => {
+    setHintLevel(0);
+  }, [step.id]);
+
+  const showNextHint = () => {
+    setHintLevel((prev) => Math.min(prev + 1, step.hints.length));
+  };
 
   return (
     <div className="flex flex-col h-full p-6 overflow-y-auto">
@@ -31,30 +40,37 @@ export function LessonPanel({ step, stepIndex, totalSteps }: LessonPanelProps) {
         {step.description}
       </p>
 
-      <p className="text-sm text-[#00ff41] mb-4">{step.instruction}</p>
-
       {step.codeSnippet && (
         <pre className="bg-[#0d1117] border border-[#1a1a2e] rounded-md p-4 mb-4 text-sm overflow-x-auto">
           <code className="text-[#00f0ff]">{step.codeSnippet}</code>
         </pre>
       )}
 
-      {step.hint && (
-        <div className="mt-auto">
-          {showHint ? (
-            <div className="bg-[#0d1117] border border-[#ffb000]/30 rounded-md p-3 text-sm text-[#ffb000]">
-              {step.hint}
-            </div>
-          ) : (
-            <button
-              onClick={() => setShowHint(true)}
-              className="text-sm text-[#ffb000]/60 hover:text-[#ffb000] transition-colors font-[family-name:var(--font-vt323)]"
-            >
-              [ SHOW HINT ]
-            </button>
-          )}
-        </div>
-      )}
+      {/* Progressive hints */}
+      <div className="mt-auto">
+        {hintLevel > 0 && (
+          <div className="space-y-2 mb-3">
+            {step.hints.slice(0, hintLevel).map((hint, i) => (
+              <div
+                key={i}
+                className="bg-[#0d1117] border border-[#ffb000]/30 rounded-md p-3 text-sm text-[#ffb000]"
+              >
+                <span className="text-[#ffb000]/50 mr-2">HINT {i + 1}:</span>
+                {hint}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {step.hints.length > 0 && hintLevel < step.hints.length && (
+          <button
+            onClick={showNextHint}
+            className="text-sm text-[#ffb000]/60 hover:text-[#ffb000] transition-colors font-[family-name:var(--font-vt323)]"
+          >
+            [ {hintLevel === 0 ? "SHOW HINT" : "NEXT HINT"} ({hintLevel + 1}/{step.hints.length}) ]
+          </button>
+        )}
+      </div>
     </div>
   );
 }

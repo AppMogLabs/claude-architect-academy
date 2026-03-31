@@ -188,6 +188,83 @@ body {
   animation: flash-amber 300ms ease-out forwards;
 }
 
+/* XP float animation */
+@keyframes xp-float {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-40px) scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-70px) scale(0.9);
+  }
+}
+
+.animate-xp-float {
+  animation: xp-float 1.2s ease-out forwards;
+}
+
+/* Fade in */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out;
+}
+
+/* Completion glitch */
+@keyframes completion-glitch {
+  0%, 90%, 100% { opacity: 0; }
+  2% {
+    opacity: 0.3;
+    background: linear-gradient(0deg, transparent 40%, rgba(0, 255, 65, 0.05) 41%, transparent 42%);
+  }
+  4% { opacity: 0; }
+  92% {
+    opacity: 0.2;
+    background: linear-gradient(0deg, transparent 60%, rgba(0, 240, 255, 0.03) 61%, transparent 62%);
+  }
+  94% { opacity: 0; }
+}
+
+.animate-completion-glitch {
+  animation: completion-glitch 4s linear infinite;
+}
+
+/* Step complete shake */
+@keyframes step-shake {
+  0%, 100% { transform: translate(0); }
+  25% { transform: translate(-2px, 1px); }
+  50% { transform: translate(2px, -1px); }
+  75% { transform: translate(-1px, -1px); }
+}
+
+.animate-step-shake {
+  animation: step-shake 0.15s ease-in-out;
+}
+
+/* Unlock glow pulse for newly unlocked lesson cards */
+@keyframes unlock-glow {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(0, 255, 65, 0.2);
+    border-color: rgba(0, 255, 65, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.5), 0 0 40px rgba(0, 255, 65, 0.2);
+    border-color: rgba(0, 255, 65, 1);
+  }
+}
+
+.animate-unlock-glow {
+  animation: unlock-glow 1.5s ease-in-out 3;
+}
+
 /* Scrollbar styling */
 ::-webkit-scrollbar {
   width: 6px;
